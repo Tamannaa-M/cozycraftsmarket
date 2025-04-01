@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, ShoppingCart, Heart, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import NavbarActions from "./NavbarActions";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -30,28 +31,21 @@ const Navbar = () => {
             <Link to="/about" className="font-medium hover:text-royal-purple transition-colors">
               About
             </Link>
-            <Link to="/contact" className="font-medium hover:text-royal-purple transition-colors">
-              Contact
-            </Link>
           </div>
 
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-              <Search size={20} className="text-royal-purple" />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-              <Heart size={20} className="text-royal-purple" />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-              <ShoppingCart size={20} className="text-royal-purple" />
-              <span className="absolute -top-1 -right-1 bg-royal-purple text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">0</span>
-            </Button>
-            <Link to="/login">
+            <Link to="/search">
               <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-                <User size={20} className="text-royal-purple" />
+                <Search size={20} className="text-royal-purple" />
               </Button>
             </Link>
+            <Link to="/profile/wishlist">
+              <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
+                <Heart size={20} className="text-royal-purple" />
+              </Button>
+            </Link>
+            <NavbarActions />
           </div>
 
           {/* Mobile Menu Button */}
@@ -75,25 +69,18 @@ const Navbar = () => {
           <Link to="/about" className="font-medium py-2 hover:text-royal-purple transition-colors" onClick={toggleMobileMenu}>
             About
           </Link>
-          <Link to="/contact" className="font-medium py-2 hover:text-royal-purple transition-colors" onClick={toggleMobileMenu}>
-            Contact
-          </Link>
           <div className="flex items-center justify-around pt-2 border-t">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-              <Search size={20} className="text-royal-purple" />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-              <Heart size={20} className="text-royal-purple" />
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-              <ShoppingCart size={20} className="text-royal-purple" />
-              <span className="absolute -top-1 -right-1 bg-royal-purple text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">0</span>
-            </Button>
-            <Link to="/login">
+            <Link to="/search">
               <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-                <User size={20} className="text-royal-purple" />
+                <Search size={20} className="text-royal-purple" />
               </Button>
             </Link>
+            <Link to="/profile/wishlist">
+              <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
+                <Heart size={20} className="text-royal-purple" />
+              </Button>
+            </Link>
+            <NavbarActions />
           </div>
         </div>
       )}

@@ -81,11 +81,6 @@ const Footer = () => {
             <h4 className="font-bold text-lg mb-4">Customer Service</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/contact" className="text-gray-700 hover:text-royal-purple transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
                 <Link to="/faq" className="text-gray-700 hover:text-royal-purple transition-colors">
                   FAQs
                 </Link>
@@ -98,6 +93,11 @@ const Footer = () => {
               <li>
                 <Link to="/terms" className="text-gray-700 hover:text-royal-purple transition-colors">
                   Terms & Conditions
+                </Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="text-gray-700 hover:text-royal-purple transition-colors">
+                  Privacy Policy
                 </Link>
               </li>
             </ul>

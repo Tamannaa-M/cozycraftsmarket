@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -76,7 +75,7 @@ const ProfileDashboard = () => {
     fetchProfileData();
   }, [user]);
 
-  // Format price in INR
+  // Format price in INR with ₹ symbol
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -257,7 +256,7 @@ const OrdersList = () => {
     fetchOrders();
   }, [user]);
 
-  // Format price in INR
+  // Format price in INR with ₹ symbol
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -367,7 +366,7 @@ const WishlistPage = () => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
-  // Format price in INR
+  // Format price in INR with ₹ symbol
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
