@@ -3,7 +3,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { useAuth } from "./AuthContext";
 
 export interface CartItem {
   id: number | string;
@@ -31,7 +30,6 @@ export const CartContext = createContext<CartContextType | undefined>(undefined)
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const auth = useAuth();
 
   // Load cart from localStorage on initial render
   useEffect(() => {
@@ -45,13 +43,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, []);
-
-  // Handle user authentication changes
-  useEffect(() => {
-    if (auth && auth.user) {
-      syncCartWithUser(auth.user);
-    }
-  }, [auth?.user?.id]);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
