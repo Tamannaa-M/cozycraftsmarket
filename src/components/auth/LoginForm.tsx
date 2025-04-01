@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,35 +5,71 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     setIsLoading(true);
     
-    // Simulate login API call
-    setTimeout(() => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        options: {
+          persistSession: true,
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.session) {
+        toast.success("Successfully logged in!");
+        navigate("/");
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setError(error?.message || "Failed to log in. Please try again.");
+      toast.error("Login failed");
+    } finally {
       setIsLoading(false);
-      toast.success("Successfully logged in!");
-      navigate("/");
-    }, 1500);
+    }
   };
 
-  const handleSocialLogin = (provider: string) => {
+  const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     setIsLoading(true);
+    setError(null);
     
-    // Simulate social login
-    setTimeout(() => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+      
+    } catch (error: any) {
+      console.error(`${provider} login error:`, error);
+      setError(error?.message || `Failed to log in with ${provider}. Please try again.`);
+      toast.error(`${provider} login failed`);
       setIsLoading(false);
-      toast.success(`Successfully logged in with ${provider}!`);
-      navigate("/");
-    }, 1500);
+    }
   };
 
   return (
@@ -44,12 +79,19 @@ const LoginForm = () => {
         <p className="text-gray-600 mt-2">Log in to your account to continue</p>
       </div>
       
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+      
       <div className="grid grid-cols-2 gap-4">
         <Button 
           variant="outline" 
           type="button" 
           className="w-full" 
-          onClick={() => handleSocialLogin("Google")}
+          onClick={() => handleSocialLogin("google")}
           disabled={isLoading}
         >
           <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -76,7 +118,7 @@ const LoginForm = () => {
           variant="outline" 
           type="button" 
           className="w-full" 
-          onClick={() => handleSocialLogin("Facebook")}
+          onClick={() => handleSocialLogin("facebook")}
           disabled={isLoading}
         >
           <svg className="w-5 h-5 mr-2 text-blue-600 fill-current" viewBox="0 0 24 24">
@@ -102,6 +144,7 @@ const LoginForm = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
         
@@ -119,6 +162,7 @@ const LoginForm = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={isLoading}
           />
         </div>
         
@@ -128,6 +172,7 @@ const LoginForm = () => {
               id="remember" 
               checked={rememberMe}
               onCheckedChange={(checked) => setRememberMe(checked === true)}
+              disabled={isLoading}
             />
             <Label htmlFor="remember" className="text-sm cursor-pointer">Remember me</Label>
           </div>

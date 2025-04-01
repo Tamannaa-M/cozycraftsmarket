@@ -1,10 +1,26 @@
 
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import LoginForm from "@/components/auth/LoginForm";
+import { supabase } from "@/integrations/supabase/client";
 
 const Login = () => {
+  const navigate = useNavigate();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate("/"); // Redirect to home if already logged in
+      }
+    };
+    
+    checkSession();
+  }, [navigate]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
