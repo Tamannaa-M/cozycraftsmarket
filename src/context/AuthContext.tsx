@@ -2,14 +2,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useCart } from "./CartContext";
-import { useWishlist } from "./WishlistContext";
 
 interface AuthContextType {
   session: Session | null;
   user: User | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  syncUserData: (user: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,8 +17,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const { syncCartWithUser } = useCart();
-  const { syncWishlistWithUser } = useWishlist();
+
+  // Create a function to notify other contexts when user changes
+  const syncUserData = (currentUser: User | null) => {
+    // This is a placeholder function that will be called by other contexts
+    // to sync their data with the current user
+    console.log("User data sync requested for:", currentUser?.id);
+  };
 
   useEffect(() => {
     // Set up the auth state listener first
@@ -27,14 +31,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          // Use setTimeout to avoid potential deadlock issues
-          setTimeout(() => {
-            syncCartWithUser(session.user);
-            syncWishlistWithUser(session.user);
-          }, 0);
-        }
       }
     );
 
@@ -42,19 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        syncCartWithUser(session.user);
-        syncWishlistWithUser(session.user);
-      }
-      
       setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [syncCartWithUser, syncWishlistWithUser]);
+  }, []);
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -67,6 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         loading,
         signOut,
+        syncUserData,
       }}
     >
       {children}

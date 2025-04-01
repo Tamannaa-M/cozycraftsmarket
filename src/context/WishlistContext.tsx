@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { useAuth } from "./AuthContext";
 
 export interface WishlistItem {
   id: number | string;
@@ -24,6 +25,7 @@ export const WishlistContext = createContext<WishlistContextType | undefined>(un
 
 export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const auth = useAuth();
 
   // Load wishlist from localStorage on initial render
   useEffect(() => {
@@ -37,6 +39,13 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     }
   }, []);
+
+  // Handle user authentication changes
+  useEffect(() => {
+    if (auth && auth.user) {
+      syncWishlistWithUser(auth.user);
+    }
+  }, [auth?.user?.id]);
 
   // Save wishlist to localStorage whenever it changes
   useEffect(() => {
