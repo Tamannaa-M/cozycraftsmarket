@@ -1,4 +1,5 @@
 
+import * as React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,28 +22,26 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <CartProvider>
-          <WishlistProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
-              <Route path="/profile/*" element={<UserProfile />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </WishlistProvider>
-        </CartProvider>
-      </AuthProvider>
-    </TooltipProvider>
+    <AuthProvider>
+      <CartProvider>
+        <WishlistProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
+            <Route path="/profile/*" element={<UserProfile />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </WishlistProvider>
+      </CartProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
