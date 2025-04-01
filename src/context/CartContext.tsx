@@ -49,6 +49,31 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  // Set up auth state listener
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (session?.user) {
+          // Defer to avoid circular dependency issues
+          setTimeout(() => {
+            syncCartWithUser(session.user);
+          }, 0);
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        syncCartWithUser(session.user);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   const addToCart = (item: Omit<CartItem, "quantity">) => {
     setCartItems(prevItems => {
       const existingItemIndex = prevItems.findIndex(cartItem => cartItem.id === item.id);
