@@ -1,19 +1,14 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X, ShoppingCart, Heart, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NavbarActions from "./NavbarActions";
-
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
-  return (
-    <nav className="bg-white shadow-sm py-4 sticky top-0 z-50">
+  return <nav className="bg-white shadow-sm py-4 sticky top-0 z-50">
       <div className="container-custom">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -36,14 +31,10 @@ const Navbar = () => {
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/search">
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-                <Search size={20} className="text-royal-purple" />
-              </Button>
+              
             </Link>
             <Link to="/profile/wishlist">
-              <Button variant="ghost" size="icon" className="rounded-full hover:bg-royal-light">
-                <Heart size={20} className="text-royal-purple" />
-              </Button>
+              
             </Link>
             <NavbarActions />
           </div>
@@ -58,8 +49,7 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md p-4 flex flex-col space-y-4 animate-fade-in">
+      {isMobileMenuOpen && <div className="md:hidden absolute top-full left-0 right-0 bg-white shadow-md p-4 flex flex-col space-y-4 animate-fade-in">
           <Link to="/" className="font-medium py-2 hover:text-royal-purple transition-colors" onClick={toggleMobileMenu}>
             Home
           </Link>
@@ -82,10 +72,7 @@ const Navbar = () => {
             </Link>
             <NavbarActions />
           </div>
-        </div>
-      )}
-    </nav>
-  );
+        </div>}
+    </nav>;
 };
-
 export default Navbar;
