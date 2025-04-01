@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Heart, Minus, Plus, Share2, ShoppingCart } from "lucide-react";
+import { Heart, Minus, Plus, Share2, ShoppingCart, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useWishlist } from "@/context/WishlistContext";

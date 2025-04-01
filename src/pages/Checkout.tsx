@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -25,6 +24,7 @@ import {
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
+import * as React from "react";
 
 // Define form schemas
 const addressSchema = z.object({
@@ -214,7 +214,7 @@ const Checkout = () => {
       // Create order items
       const orderItems = cartItems.map(item => ({
         order_id: orderData.id,
-        product_id: item.id,
+        product_id: String(item.id),
         product_name: item.name,
         quantity: item.quantity,
         price: item.price,
