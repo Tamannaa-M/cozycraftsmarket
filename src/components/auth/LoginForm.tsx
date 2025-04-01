@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,28 +18,51 @@ const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        navigate("/");
+      }
+    };
+    
+    checkSession();
+  }, [navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
     
     try {
+      console.log("Attempting login with:", { email });
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
+        console.error("Supabase auth error:", error);
         throw error;
       }
 
       if (data?.session) {
         toast.success("Successfully logged in!");
         navigate("/");
+      } else {
+        // This shouldn't happen as supabase should throw an error if login fails
+        throw new Error("Login failed - no session returned");
       }
     } catch (error: any) {
       console.error("Login error:", error);
-      setError(error?.message || "Failed to log in. Please try again.");
+      
+      if (error.message === "Invalid login credentials") {
+        setError("The email or password you entered is incorrect. Please try again.");
+      } else {
+        setError(error?.message || "Failed to log in. Please try again.");
+      }
       toast.error("Login failed");
     } finally {
       setIsLoading(false);
@@ -50,6 +74,8 @@ const LoginForm = () => {
     setError(null);
     
     try {
+      console.log(`Attempting ${provider} login`);
+      
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
@@ -58,6 +84,7 @@ const LoginForm = () => {
       });
 
       if (error) {
+        console.error(`${provider} auth error:`, error);
         throw error;
       }
       
@@ -67,6 +94,19 @@ const LoginForm = () => {
       toast.error(`${provider} login failed`);
       setIsLoading(false);
     }
+  };
+
+  // For demonstration/testing only - consider removing in production
+  const handleDemoLogin = async () => {
+    setEmail("demo@example.com");
+    setPassword("demo123456");
+    
+    // Wait for state update before submitting
+    setTimeout(() => {
+      document.getElementById("login-form")?.dispatchEvent(
+        new Event("submit", { cancelable: true, bubbles: true })
+      );
+    }, 100);
   };
 
   return (
@@ -131,7 +171,7 @@ const LoginForm = () => {
         <div className="h-px bg-gray-300 flex-grow"></div>
       </div>
       
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form id="login-form" onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -178,6 +218,17 @@ const LoginForm = () => {
         <Button type="submit" className="w-full btn-primary" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Log in"}
         </Button>
+        
+        <div className="mt-4">
+          <Button 
+            type="button" 
+            variant="outline"
+            className="w-full text-sm" 
+            onClick={handleDemoLogin}
+          >
+            Use Demo Account
+          </Button>
+        </div>
       </form>
       
       <div className="text-center text-sm">
