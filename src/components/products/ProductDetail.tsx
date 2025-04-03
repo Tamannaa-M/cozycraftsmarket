@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Heart, ShoppingCart, Check, Share2, ChevronRight, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { useCart } from "@/context/CartContext";
 
 // Mock product data - in a real app this would come from an API
 const product = {
@@ -42,12 +42,20 @@ const ProductDetail = ({ productId }: ProductDetailProps) => {
   const [mainImage, setMainImage] = useState(product.images[0]);
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const { addToCart } = useCart();
 
   const formatPrice = (price: number) => {
     return `₹${price.toLocaleString('en-IN')}`;
   };
 
   const handleAddToCart = () => {
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: mainImage
+    }, quantity);
+    
     toast.success(`${product.name} added to cart!`);
   };
   
@@ -217,7 +225,6 @@ const ProductDetail = ({ productId }: ProductDetailProps) => {
         </div>
       </div>
       
-      {/* Product Tabs */}
       <div className="mt-16">
         <Tabs defaultValue="details">
           <TabsList className="grid w-full grid-cols-3">
