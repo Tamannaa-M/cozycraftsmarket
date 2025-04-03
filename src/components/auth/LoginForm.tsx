@@ -9,10 +9,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
-// Demo user credentials - for testing purposes
-const DEMO_EMAIL = "demo@example.com";
-const DEMO_PASSWORD = "demo123456";
+import { useAuth } from "@/context/AuthContext";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -21,18 +18,15 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Check if user is already logged in
   useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        navigate("/");
-      }
-    };
-    
-    checkSession();
-  }, [navigate]);
+    if (user) {
+      console.log("User already logged in, redirecting to home");
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,71 +90,6 @@ const LoginForm = () => {
       console.error(`${provider} login error:`, error);
       setError(error?.message || `Failed to log in with ${provider}. Please try again.`);
       toast.error(`${provider} login failed`);
-      setIsLoading(false);
-    }
-  };
-
-  // Create a demo account if it doesn't exist and then log in with it
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      // First try to sign in with the demo account
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: DEMO_EMAIL,
-        password: DEMO_PASSWORD
-      });
-      
-      // If login was successful, redirect to home
-      if (signInData?.session) {
-        toast.success("Logged in with demo account!");
-        navigate("/");
-        return;
-      }
-      
-      // If login failed because the account doesn't exist, create a new account
-      if (signInError && signInError.message === "Invalid login credentials") {
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-          email: DEMO_EMAIL,
-          password: DEMO_PASSWORD,
-          options: {
-            data: {
-              name: "Demo User"
-            }
-          }
-        });
-        
-        if (signUpError) {
-          throw signUpError;
-        }
-        
-        // If signup was successful, sign in with the new account
-        if (signUpData?.user) {
-          const { data: newSignInData, error: newSignInError } = await supabase.auth.signInWithPassword({
-            email: DEMO_EMAIL,
-            password: DEMO_PASSWORD
-          });
-          
-          if (newSignInError) {
-            throw newSignInError;
-          }
-          
-          if (newSignInData?.session) {
-            toast.success("Demo account created and logged in!");
-            navigate("/");
-            return;
-          }
-        }
-      } else if (signInError) {
-        // If there was an error other than "Invalid login credentials"
-        throw signInError;
-      }
-    } catch (error: any) {
-      console.error("Demo login error:", error);
-      setError(error?.message || "Failed to log in with demo account. Please try again.");
-      toast.error("Demo login failed");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -274,18 +203,6 @@ const LoginForm = () => {
         <Button type="submit" className="w-full btn-primary" disabled={isLoading}>
           {isLoading ? "Logging in..." : "Log in"}
         </Button>
-        
-        <div className="mt-4">
-          <Button 
-            type="button" 
-            variant="outline"
-            className="w-full text-sm" 
-            onClick={handleDemoLogin}
-            disabled={isLoading}
-          >
-            {isLoading ? "Processing..." : "Use Demo Account"}
-          </Button>
-        </div>
       </form>
       
       <div className="text-center text-sm">

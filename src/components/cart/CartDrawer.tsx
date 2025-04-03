@@ -16,7 +16,8 @@ export const CartDrawer = () => {
     totalItems, 
     subtotal,
     isCartOpen,
-    setIsCartOpen
+    setIsCartOpen,
+    clearCart
   } = useCart();
   
   const navigate = useNavigate();
@@ -170,6 +171,15 @@ export const CartDrawer = () => {
                 >
                   Continue Shopping
                 </Button>
+                {cartItems.length > 0 && (
+                  <Button
+                    variant="outline"
+                    className="w-full text-red-500 hover:bg-red-50 hover:text-red-600 border-red-200"
+                    onClick={clearCart}
+                  >
+                    Clear Cart
+                  </Button>
+                )}
               </div>
             </div>
           </>

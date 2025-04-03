@@ -1,13 +1,16 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, ShoppingCart, Heart, Search, User } from "lucide-react";
+import { Menu, X, ShoppingCart, Heart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NavbarActions from "./NavbarActions";
+
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
   return <nav className="bg-white shadow-sm py-4 sticky top-0 z-50">
       <div className="container-custom">
         <div className="flex items-center justify-between">
@@ -30,12 +33,6 @@ const Navbar = () => {
 
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/search">
-              
-            </Link>
-            <Link to="/profile/wishlist">
-              
-            </Link>
             <NavbarActions />
           </div>
 
@@ -75,4 +72,5 @@ const Navbar = () => {
         </div>}
     </nav>;
 };
+
 export default Navbar;
