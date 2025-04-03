@@ -43,6 +43,10 @@ const ProductDetail = ({ productId }: ProductDetailProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
+  const formatPrice = (price: number) => {
+    return `₹${price.toLocaleString('en-IN')}`;
+  };
+
   const handleAddToCart = () => {
     toast.success(`${product.name} added to cart!`);
   };
@@ -128,7 +132,7 @@ const ProductDetail = ({ productId }: ProductDetailProps) => {
               </div>
               <span className="text-sm text-gray-500">{product.rating} ({product.reviewCount} reviews)</span>
             </div>
-            <div className="text-2xl font-bold text-royal-purple mb-6">${product.price}</div>
+            <div className="text-2xl font-bold text-royal-purple mb-6">{formatPrice(product.price)}</div>
             <p className="text-gray-600 mb-6">{product.description}</p>
           </div>
           

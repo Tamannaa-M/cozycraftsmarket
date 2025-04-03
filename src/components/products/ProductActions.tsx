@@ -24,11 +24,7 @@ const ProductActions = ({ product }: ProductActionsProps) => {
   const navigate = useNavigate();
   
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(price);
+    return `₹${price.toLocaleString('en-IN')}`;
   };
   
   const handleQuantityChange = (amount: number) => {

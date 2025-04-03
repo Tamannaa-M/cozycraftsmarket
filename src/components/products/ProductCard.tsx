@@ -40,6 +40,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
     }
   };
 
+  const formatPrice = (price: number) => {
+    return `₹${price.toLocaleString('en-IN')}`;
+  };
+
   return (
     <Link to={`/product/${product.id}`}>
       <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 card-hover">
@@ -88,7 +92,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <h3 className="font-medium text-gray-900 group-hover:text-royal-purple transition-colors">
               {product.name}
             </h3>
-            <span className="font-semibold text-royal-purple">${product.price}</span>
+            <span className="font-semibold text-royal-purple">{formatPrice(product.price)}</span>
           </div>
           
           <div className="flex items-center gap-1">
